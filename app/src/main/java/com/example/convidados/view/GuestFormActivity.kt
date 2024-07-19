@@ -34,9 +34,6 @@ class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
             name = binding.editName.text.toString()
             isPresent = binding.radioPresent.isChecked
 
-            if (!isPresent)
-                isPresent = binding.radioAbsent.isChecked
-
             viewModel.insert(GuestModel(1, name, isPresent))
         }
     }
