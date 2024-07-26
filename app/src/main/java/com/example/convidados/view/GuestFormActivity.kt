@@ -3,9 +3,11 @@ package com.example.convidados.view
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.convidados.model.GuestModel
 import com.example.convidados.R
+import com.example.convidados.constants.DataBaseConstants
 import com.example.convidados.databinding.ActivityGuestFormBinding
 import com.example.convidados.viewmodel.GuestFormViewModel
 
@@ -13,6 +15,8 @@ class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var binding: ActivityGuestFormBinding
     private lateinit var viewModel: GuestFormViewModel
+
+    private var guestId = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +28,9 @@ class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
 
         binding.buttonSave.setOnClickListener(this)
         binding.radioPresent.isChecked = true
+
+        observe()
+        loadData()
     }
 
     override fun onClick(v: View) {
@@ -34,7 +41,26 @@ class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
             name = binding.editName.text.toString()
             isPresent = binding.radioPresent.isChecked
 
-            viewModel.insert(GuestModel(1, name, isPresent))
+            viewModel.save(GuestModel(guestId, name, isPresent))
+        }
+    }
+
+    private fun observe() {
+        viewModel.guest.observe(this, Observer {
+            binding.editName.setText(it.name)
+
+            if (it.present)
+                binding.radioPresent.isChecked = true
+            else
+                binding.radioAbsent.isChecked = true
+        })
+    }
+
+    private fun loadData() {
+        val bundle = intent.extras
+        if (bundle != null) {
+            val guestId = bundle.getInt(DataBaseConstants.GUEST.ID)
+            viewModel.get(guestId)
         }
     }
 }
