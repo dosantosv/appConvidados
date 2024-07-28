@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.convidados.model.FunctionResponse
 import com.example.convidados.model.GuestModel
 import com.example.convidados.repository.GuestRepository
 
@@ -14,19 +15,18 @@ class GuestFormViewModel(application: Application) : AndroidViewModel(applicatio
     private val guestModel = MutableLiveData<GuestModel>()
     val guest: LiveData<GuestModel> = guestModel
 
+    private val _saveGuest = MutableLiveData<FunctionResponse>()
+    val saveGuest: LiveData<FunctionResponse> = _saveGuest
+
     fun save(guest: GuestModel) {
-        if(guest.id == 0)
-            insert(guest)
-        else
-            update(guest)
-    }
-
-    fun insert(guest: GuestModel) {
-        repository.insert(guest)
-    }
-
-    fun update(guest: GuestModel) {
-        repository.update(guest)
+        val functionResponse = FunctionResponse(false)
+        if(guest.id == 0) {
+            functionResponse.sucess = repository.insert(guest)
+            functionResponse.message = "Inserção feita com sucesso!"
+        } else {
+            functionResponse.sucess = repository.update(guest)
+            functionResponse.message = "Atualização feita com sucesso!"
+        }
     }
 
     fun get(id : Int) {
