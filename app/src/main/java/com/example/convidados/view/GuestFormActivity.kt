@@ -42,7 +42,13 @@ class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
             name = binding.editName.text.toString()
             isPresent = binding.radioPresent.isChecked
 
-            viewModel.save(GuestModel(guestId, name, isPresent))
+            val model = GuestModel().apply {
+                this.id = guestId
+                this.name = name
+                this.presence = presence
+            }
+
+            viewModel.save(model)
         }
     }
 
@@ -50,7 +56,7 @@ class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
         viewModel.guest.observe(this, Observer {
             binding.editName.setText(it.name)
 
-            if (it.present)
+            if (it.presence)
                 binding.radioPresent.isChecked = true
             else
                 binding.radioAbsent.isChecked = true

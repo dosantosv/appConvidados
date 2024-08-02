@@ -11,6 +11,8 @@ import com.example.convidados.model.GuestModel
 @Database(entities = [GuestModel::class], version = 1)
 abstract class GuestDataBase : RoomDatabase() {
 
+    abstract fun guestDAO(): GuestDAO
+
     companion object {
         private lateinit var instance: GuestDataBase
 
